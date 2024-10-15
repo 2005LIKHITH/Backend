@@ -1,5 +1,6 @@
 import mongoose, {Schema} from "mongoose";
-
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 const userSchema = new Schema({
 
     username:{
@@ -17,7 +18,7 @@ const userSchema = new Schema({
         lowecase:true,
         trim:true
     },
-    fullname:{
+    fullName:{
         type:String,
         required:true,
         trim:true,
@@ -49,4 +50,45 @@ const userSchema = new Schema({
     timestamps:true
 }
 );
+//.pre is a hook
+userSchema.pre("save",async function(next){
+    if(!(this.isModified("password"))){
+        return next();
+    }
+    this.password = await becryt.hash(this.password,10);
+    next();
+})
+//Custom Methods
+userSchema.methods.isPasswordCorrect = async function(password){
+    return await bcrypt.compare(password,this.password);
+}
 export const User =  mongoose.model("User",userSchema)
+//JWT is bearer Token
+// yeh token jiske bhi pass vusko hi baap maan letha hain
+
+ userSchema.methods.generateAcessToken =  function(){
+
+    return  jwt.sign(
+        //Given payload
+        {
+            _id:this._id,
+            email:this.email,
+            username:this.username,
+            fullName:this.fullName
+        },
+        proces.env.ACESS_TOKEN_SECRET,
+        {
+            expiresIn:process.env.ACESS_TOKEN_EXPIRY
+        }
+    )
+ }
+ userSchema.methods.generateRefreshToken =  function(){
+    return jwt.sign(
+        {
+            _id:this._id
+        },process.env.REFRESH_TOKEN_SECRET,
+        {
+            expiresIn:process.env.REFRESH_TOKEN_EXPIRY
+        }
+    )
+ }
