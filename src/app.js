@@ -8,6 +8,18 @@ app.use(cors({
 }));
 app.use(express.urlencoded({extended:true,limit:"16kb "}))//data came via url
 app.use(express.static("public"))//Public folder name to save images and fevicon
+app.use(cookieParser())
+
+
+//routes import
+
+import  userRouter  from "./routes/user.routes.js";
+
+
+
+//routes declaratino
+app.use("/api/v1/user",userRouter)
+
 
 
 export{app}
