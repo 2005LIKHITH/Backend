@@ -55,14 +55,13 @@ userSchema.pre("save",async function(next){
     if(!(this.isModified("password"))){
         return next();
     }
-    this.password = await becryt.hash(this.password,10);
+    this.password = await bcrypt.hash(this.password,10);
     next();
 })
 //Custom Methods
 userSchema.methods.isPasswordCorrect = async function(password){
     return await bcrypt.compare(password,this.password);
 }
-export const User =  mongoose.model("User",userSchema)
 //JWT is bearer Token
 // yeh token jiske bhi pass vusko hi baap maan letha hain
 
@@ -76,7 +75,7 @@ export const User =  mongoose.model("User",userSchema)
             username:this.username,
             fullName:this.fullName
         },
-        proces.env.ACESS_TOKEN_SECRET,
+        process.env.ACESS_TOKEN_SECRET,
         {
             expiresIn:process.env.ACESS_TOKEN_EXPIRY
         }
@@ -92,4 +91,6 @@ export const User =  mongoose.model("User",userSchema)
         }
     )
  }
+ export  const User =  mongoose.model("User",userSchema);
+
 // USER -> MULTER -> {STORE IN TEMP of USER} -> (form Local Store) -> Cloudinary
