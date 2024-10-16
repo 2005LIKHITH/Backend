@@ -32,7 +32,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     if(!avatar)throw new ApiError(400,"Avatar upload failed");
 
-    const user = User.create({
+    const user = await User.create({
         fullName,
         avatar : avatar.url,
         coverImage : coverImage?.url || "",
@@ -43,7 +43,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     })
 
-    const createdUser = await user.findbyObjectId(user._id).select(
+    const createdUser = await User.findById(user._id).select(
         "-password -refreshToken" //we don't want to send password and refreshToken
     );
 
