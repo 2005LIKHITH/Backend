@@ -4,6 +4,7 @@ import ApiError from "../utils/ApiError.js";
 import {User} from "../model/user.model.js";
 import {uploadOnCloudinary} from "../utils/cloudinary.js";
 import {ApiResponse} from "../utils/ApiResponse.js";
+
 const registerUser = asyncHandler(async (req, res) => {
     // Here, you might want to add your registration logic
     // res.status(200).json({ message: "REGISTERED USER !!" });
@@ -56,26 +57,31 @@ const registerUser = asyncHandler(async (req, res) => {
 
 
 }); 
-const generateAcessAndRefreshToken = async(userId)=>{
-    try{
-        const user = await User.findById(userId);
-        if(!user)throw new ApiError(404,"User not found");
+const generateAccessAndRefreshToken = async(userId) =>{
+    try {
+        const user = await User.findById(userId)
+        const refreshToken = user.generateRefreshToken()
+        // console.log(user)
+        const accessToken = user.generateAccessToken()
 
-        const accessToken = user.generateAcessToken();
-        const refreshToken = user.generateRefreshToken();
-        // return {accessToken,refreshToken}
-        user.refreshToken = refreshToken;
-        await user.save({validateBeforeSave:false}); //Improve teh speed of the development 
+        
 
-        return {accessToken,refreshToken};
-    }catch(err){
-        throw new ApiError (500,"Something went wrong while generating access and refresh token");  
+        user.refreshToken = refreshToken
+        await user.save({ validateBeforeSave: false })
+
+        return {accessToken, refreshToken}
+
+
+    } catch (error) {
+        throw new ApiError(500, "Something went wrong while generating referesh and access token")
     }
 }
-
 const loginUser = asyncHandler(async(req,res)=>{
     const {email,password,username} = req.body;
-    if(!username && !email)throw new ApiError(400,"Username or Email is required");
+    // console.log({email,password,username});
+    if (!username && !email) {
+        throw new ApiError(400, "username or email is required")
+    }
     if(!password)throw new ApiError(400,"Password is required");
 
     const user = await User.findOne({
@@ -91,7 +97,7 @@ const loginUser = asyncHandler(async(req,res)=>{
     const isPasswordCorrect = await user.isPasswordCorrect(password);
     if(!isPasswordCorrect)throw new ApiError(401,"Invalid Credentials");
 
-    const {accessToken,refreshToken} = await generateAcessAndRefreshToken(user._id);
+    const {accessToken,refreshToken} = await generateAccessAndRefreshToken(user._id);
 
 
 

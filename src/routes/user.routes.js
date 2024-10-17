@@ -19,7 +19,7 @@ router.route("/register").post(upload.fields(
 ),registerUser);
 
 
-router.route("/login").post(verifyJWT,loginUser)
+router.route("/login").post(loginUser)
 
 //Secured Routes 
 

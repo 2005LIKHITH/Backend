@@ -65,7 +65,7 @@ userSchema.methods.isPasswordCorrect = async function(password){
 //JWT is bearer Token
 // yeh token jiske bhi pass vusko hi baap maan letha hain
 
- userSchema.methods.generateAcessToken =  function(){
+ userSchema.methods.generateAccessToken =  function(){
 
     return  jwt.sign(
         //Given payload
@@ -75,9 +75,9 @@ userSchema.methods.isPasswordCorrect = async function(password){
             username:this.username,
             fullName:this.fullName
         },
-        process.env.ACESS_TOKEN_SECRET,
+        process.env.ACCESS_TOKEN_SECRET,
         {
-            expiresIn:process.env.ACESS_TOKEN_EXPIRY
+            expiresIn:process.env.ACCESS_TOKEN_EXPIRY
         }
     )
  }
