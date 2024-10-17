@@ -5,8 +5,10 @@ import cookieParser from "cookie-parser"
 const app = express()
 
 
+//Cross Origin Resource Sharing
+
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: process.env.CORS_ORIGIN,// Here we set that we will accept them from any wehre CORS_ORIGIN =*
     credentials: true//Setting this to true allows cookies and other credentials to 
     // be sent with cross-origin requests, which is important for authenticated sessions.
 }))
@@ -23,7 +25,7 @@ import userRouter from './routes/user.routes.js'
 //routes declaration
 
 
-app.use("/api/v1/users", userRouter)
+app.use("/api/v1/users", userRouter)//Jo bhi userRouter pe jaraheho usko ye chipka ke bhejdo
 
 
 

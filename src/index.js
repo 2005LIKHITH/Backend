@@ -10,6 +10,8 @@ dotenv.config({
 // console.log(process.env.MONGODB_URI);
 connectDB().then(()=>{
 
+
+    //we got our app from app.js Dyanan Rakho Bhai
     //Agar Connection Successful Hua then it will connect to the express
 
     app.listen(process.env.PORT || 8000, ()=>{
