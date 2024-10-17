@@ -32,5 +32,5 @@ const connectDB = async () => {
     }
 };
 
-
+//Ab data base ke Baare re men koi chintha karne ka Zarrorat Nahi hain !!
 export default connectDB;

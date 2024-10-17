@@ -9,12 +9,15 @@ dotenv.config({
 
 // console.log(process.env.MONGODB_URI);
 connectDB().then(()=>{
+
+    //Agar Connection Successful Hua then it will connect to the express
+
     app.listen(process.env.PORT || 8000, ()=>{
         console.log(`⚙️ Server started on port ${process.env.PORT || 8000}`);
     })
-    app.on("error", (err)=>{
-        throw console.log("MongoDB Connection FAILED !!!",err);
-    })
+    // app.on("error", (err)=>{
+    //     throw console.log("MongoDB Connection FAILED !!!",err);
+    // }) This block is Obsolete
 }).catch((err)=>{
     console.log("MongoDB Connection FAILED !!!",err);
 });
