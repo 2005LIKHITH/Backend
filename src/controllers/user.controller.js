@@ -57,6 +57,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const coverImage  = await uploadOnCloudinary(coverImageLocalPath);
 
     if(!avatar)throw new ApiError(400,"Avatar upload failed");
+    //Cover Image is not neccessary
 
     const user = await User.create({
         fullName,
@@ -66,7 +67,7 @@ const registerUser = asyncHandler(async (req, res) => {
         password,
         username : username.toLowerCase(),
 
-
+        //'.create()' incorporates the  '.save()' functionality
     })
 
     const createdUser = await User.findById(user._id).select(
@@ -77,6 +78,8 @@ const registerUser = asyncHandler(async (req, res) => {
 
     return res.status(201).json(
         new ApiResponse(200,createdUser,"User Registered Successfully !!")
+
+        //it will show 201 in post man 
     )
 
 
