@@ -19,14 +19,37 @@ const registerUser = asyncHandler(async (req, res) => {
     }
    const existingUser =  await User.findOne({
         $or:[{username},{email}]
+
+        //Like bitwise OR
         
     })
 
     if(existingUser)throw new ApiError(409,"User already exists");
-    console.log(req.files);
+    // console.log(req.files);
     const avatarLocalPath = req.files?.avatar[0]?.path;//if you later upload muliple files [0] helps
     const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
+    /*
+
+        How multer is managing things
+
+`   req.files = {
+    avatar: [
+        {
+            fieldname: "avatar",
+            originalname: "myAvatar.jpg",
+            encoding: "7bit",
+            mimetype: "image/jpeg",
+            destination: "uploads/",
+            filename: "someUniqueFileName.jpg",
+            path: "uploads/someUniqueFileName.jpg",
+            size: 12345,
+        }
+    ]
+};
+
+
+    */
     if(!coverImageLocalPath)throw new ApiError(400,"Cover Image is required");
     if(!avatarLocalPath)throw new ApiError(400,"Avatar is required");
 
