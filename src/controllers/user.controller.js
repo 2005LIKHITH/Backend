@@ -272,7 +272,12 @@ const updateAccountDetails = asyncHandler(async(req,res)=>{
 })
 
 const updateUserCoverImage = asyncHandler(async(req,res)=>{
-    //Update User Avatar
+    //Update User Cover Image
+
+    const userDetail = await User.findById(req.user?._id);
+    const beforeCoverImage =  userDetail?.coverImage;
+
+    
 
     const coverImageLocalPath = req.file?.path;
     if(!coverImageLocalPath)throw new ApiError(400,"CoverImage  file is required");
@@ -290,6 +295,20 @@ const updateUserCoverImage = asyncHandler(async(req,res)=>{
         },{new:true}// update hone ka badd jo bhi information hotha hain wo hamare paas aate hain
 
     ).select("-password","-refreshToken")
+
+
+    try{
+
+        const beforeCoverImageUrl = beforeCoverImage?.url
+        const publicId = beforeCoverImageUrl?.split("/").pop().split(".")[0];
+
+        await deleteOnCloudinary(publicId);
+
+        console.log("Previous cover image has been deleted successfully");
+
+    }catch(err){
+        throw new ApiError(500,err?.message || "Not able to delete previous Cover image");
+    }
        
     return res.status(200).json(
         new ApiResponse(200,user,"User Details Updated Successfully !!")
@@ -299,7 +318,8 @@ const updateUserCoverImage = asyncHandler(async(req,res)=>{
 
 const updateUserAvatar = asyncHandler(async(req,res)=>{
     //Update User Avatar
-
+    const userDetail = await User.findById(req.user?._id);
+    const beforeAvatar =  userDetail?.avatar;
     const avatarLocalPath = req.file?.path;
     if(!avatarLocalPath)throw new ApiError(400,"Avatar file is required");
     const avatar = await uploadOnCloudinary(avatarLocalPath);
@@ -316,11 +336,37 @@ const updateUserAvatar = asyncHandler(async(req,res)=>{
         },{new:true}// update hone ka badd jo bhi information hotha hain wo hamare paas aate hain
 
     ).select("-password","-refreshToken")
-       
+    //Deleting an user Avatar Bro Let Do it 
+    /*
+        Purane Avatar ko delete karna acchi baat hai lekin Avatar update hone se pehla delete  karna ye Axhi baat nahi hain :)
+
+        In Cloudinary, the public ID is a unique identifier for each uploaded asset (like images, videos, etc.).
+        When you upload a file to Cloudinary, it generates a public ID that you can use to reference that file later 
+        for various operations, including deletion.
+
+    */
+    try{
+        const beforeAvatarUrl = beforeAvatar?.url;
+        const publicId = beforeAvatarUrl?.split("/").pop().split(".")[0];
+        await deleteOnCloudinary(publicId);
+    
+        console.log("Old Avatar Deleted Successfully !!");
+
+    }catch(err){
+
+        throw new ApiError(500,err?.message || "Error while deleting old avatar");
+
+    }
+
+
+
+
     return res.status(200).json(
         new ApiResponse(200,user,"User Details Updated Successfully !!")
     )
 
 })
+
+
 export { registerUser , loginUser  , logOutUser,refreshAccessToken,changePassword,
      getUser,updateAccountDetails,updateUserAvatar,updateUserCoverImage};

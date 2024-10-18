@@ -2,6 +2,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import fs from "fs"
 //fs => file system form node js
 import dotenv from "dotenv"
+
 dotenv.config({
     path: './.env'
 })
@@ -39,6 +40,18 @@ const uploadOnCloudinary = async (localFilePath)=>{
     }
         //remove the locally saved temporary file as the operation cloud}
 }
+const deleteOnCloudinary = async(publicId)=>{
+    if(!publicId)throw new ApiError(500,"Not able to delete previous image");
 
+    try{
 
-export  {uploadOnCloudinary}
+        const response = await cloudinary.uploader.destroy(publicId);
+        console.log("File has been deleted sucessfully",response);
+        return response;
+    }catch(err){
+        console.error("Error deleting file from Cloudinary:",err);
+        throw new ApiError(500,"Not able to delete previous image");
+    }
+}
+
+export  {uploadOnCloudinary,deleteOnCloudinary}
