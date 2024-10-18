@@ -228,4 +228,22 @@ const refreshAccessToken = asyncHandler(async(req,res)=>{
 
 
 })
-export { registerUser , loginUser  , logOutUser,refreshAccessToken};
+const changePassword = asyncHandler(async(req,res)=>{
+    const {currentPassword,newPassword,confirmPassword} = req.body  
+    if(!(currentPassword && newPassword && confirmPassword))throw new ApiError(400,"All fields are required");
+    if(newPassword !== confirmPassword)throw new ApiError(400,"Passwords do not match");
+    
+
+    //Already user logged in so uske paas access token aayega
+    const user = await User.findById(req.user._id);
+    const isPasswordCorrect = await user.isPasswordCorrect(currentPassword);
+    if(!isPasswordCorrect)throw new ApiError(400,"Current password is incorrect");
+    user.password = newPassword;
+    await user.save({validateBeforeSave:false});
+    return res.status(200).json(new ApiResponse(200,"Password Changed Successfully !!"))
+
+
+})
+
+
+export { registerUser , loginUser  , logOutUser,refreshAccessToken,changePassword};
