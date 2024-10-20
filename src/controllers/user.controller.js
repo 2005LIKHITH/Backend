@@ -19,9 +19,7 @@ const registerUser = asyncHandler(async (req, res) => {
     }
    const existingUser =  await User.findOne({
         $or:[{username},{email}]
-
         //Like bitwise OR
-        
     })
 
     if(existingUser)throw new ApiError(409,"User already exists");
@@ -30,7 +28,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
     /*
-
+                              
         How multer is managing things
 
 `   req.files = {
@@ -50,6 +48,8 @@ const registerUser = asyncHandler(async (req, res) => {
 
 
     */
+
+//
     if(!coverImageLocalPath)throw new ApiError(400,"Cover Image is required");
     if(!avatarLocalPath)throw new ApiError(400,"Avatar is required");
 
@@ -72,7 +72,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     const createdUser = await User.findById(user._id).select(
         "-password -refreshToken" //we don't want to send password and refreshToken
-    );
+    );           
 
     if(!createdUser)throw new ApiError(500,"Something went wrong while registering the user");
 
@@ -80,6 +80,10 @@ const registerUser = asyncHandler(async (req, res) => {
         new ApiResponse(200,createdUser,"User Registered Successfully !!")
 
         //it will show 201 in post man 
+
+
+        //Iss route me refresh token create nahi hua
+
     )
 
 
@@ -94,7 +98,7 @@ const generateAccessAndRefreshToken = async(userId) =>{
         
 
         user.refreshToken = refreshToken
-        await user.save({ validateBeforeSave: false })
+        await user.save({ validateBeforeSave: false })//Ham ab koi check nahi kar rahe hai                                                                                                                                                                                                                                                                                    
 
         return {accessToken, refreshToken}
 
@@ -144,6 +148,7 @@ const loginUser = asyncHandler(async(req,res)=>{
     .json(new ApiResponse(200,
         {
             //If we user want to access the refresh token and accesstoken by himself to devlelop any application he can do it 
+           
             user: loggedInUser,accessToken,refreshToken,
 
         },
@@ -152,6 +157,7 @@ const loginUser = asyncHandler(async(req,res)=>{
 
 
 
+// this is how in via authorization header const token = req.headers.authorization?.split(' ')[1]; // "Bearer <token>"
 
 
 
@@ -212,21 +218,12 @@ const refreshAccessToken = asyncHandler(async(req,res)=>{
     
         return res.status(200).cookie("accessToken",accessToken,options)
         .cookie("newrefreshToken",newrefreshToken,options).json(
-            new ApiResponse(200,{accessToken,refreshToken:newrefreshToken},"Access Token Refreshed Successfully !!") 
+            new ApiResponse(200,{accessToken:accessToken,refreshToken:newrefreshToken},"Access Token Refreshed Successfully !!") 
     
         )    
     }catch(err){
         throw new ApiError(401,err?.message || "Invalid Refresh Token");
     }
-
-
-
-
-
-
-
-
-
 })
 const changePassword = asyncHandler(async(req,res)=>{
     const {currentPassword,newPassword,confirmPassword} = req.body  

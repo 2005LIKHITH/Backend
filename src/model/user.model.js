@@ -1,5 +1,5 @@
-import mongoose, {Schema} from "mongoose";
-import bcrypt from "bcrypt";
+import mongoose, {Schema} from "mongoose";                                             
+import bcrypt from "bcrypt";//Agar Company ka aadmi hi chor Nikla hai Toh Kya Kroge Bhai /\
 import jwt from "jsonwebtoken";
 const userSchema = new Schema({
 
@@ -9,7 +9,7 @@ const userSchema = new Schema({
         unique:true,
         lowercase:true,
         trim:true,
-        index:true,// Fast Searching but little expensive agr sab jagan index:true rakhliya hai toh band bajj jaatha hain
+        index:true,// Fast Searching but little expensive agr sab jagan index:true rakhliya hai toh database ka band bajj jaayega
 
     },
     email:{
@@ -17,7 +17,7 @@ const userSchema = new Schema({
         required:true,
         lowercase:true,
         trim:true
-    },
+    }, 
     fullName:{
         type:String,
         required:true,
@@ -57,9 +57,11 @@ const userSchema = new Schema({
 
 //.pre is a MiddleWare Hook jaise Hi save hone keliye start hua file beech raasthe me usko pakad ke Ye waala operation 
 //Karaya
+
+// .pre() is a type of middleware so we used 
 userSchema.pre("save",async function(next){
     if(!(this.isModified("password"))){
-        return next();
+        return next();//Go to the next stage fn((saveCall),(OtherOperation)) from saveCall to OtherOperation
     }
     // Why async ?
     /*
@@ -68,12 +70,18 @@ userSchema.pre("save",async function(next){
         Jab Thak wo katham nahi hoga wahi par rukho
 
         Remember not to use Arrow Function becuase we are using this keyword
+
+
+        Context is IMPORTANT Bruh
     
     */
     this.password = await bcrypt.hash(this.password,10);
+    //we can have any other value to make the hashed password more secure but it will take burden on the Express Server
     next();
 })
 //Custom Methods
+
+
 userSchema.methods.isPasswordCorrect = async function(password){
     return await bcrypt.compare(password,this.password);
 
@@ -92,6 +100,11 @@ userSchema.methods.isPasswordCorrect = async function(password){
 
 
     At last Industry Practice is using Cookies
+
+
+    The following Article will clear all your doubts regarding sessionId v/s JWT
+
+    https://medium.com/@prashantramnyc/difference-between-session-cookies-vs-jwt-json-web-tokens-for-session-management-4be67d2f066e
 */
  userSchema.methods.generateAccessToken =  function(){
 
@@ -119,6 +132,6 @@ userSchema.methods.isPasswordCorrect = async function(password){
         }
     )
  }
- export  const User =  mongoose.model("User",userSchema);
+export  const User =  mongoose.model("User",userSchema);
 
 // USER -> MULTER -> {STORE IN TEMP of USER} -> (form Local Store) -> Cloudinary

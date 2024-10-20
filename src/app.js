@@ -13,10 +13,23 @@ app.use(cors({
     // be sent with cross-origin requests, which is important for authenticated sessions.
 }))
 
-app.use(express.json({limit: "16kb"}))
-app.use(express.urlencoded({extended: true, limit: "16kb"}))
+
+//Middleware's
+
+app.use(express.json({limit: "16kb"}))//Json Payloads 
+app.use(express.urlencoded({extended: true, limit: "16kb"}))//Url encoded payloads
 app.use(express.static("public"))//we can serve the files which doesn't need any server side rendering
-app.use(cookieParser())
+
+/*
+
+    In More Detail
+
+    When a request is made for a file 
+    (e.g., http://yourdomain.com/style.css), Express will look in the public folder 
+    for style.css and serve it directly.
+
+*/
+app.use(cookieParser())//Basicaly a Cookie Handler , like Drug Handler LmaO :)
 
 
 //routes import
@@ -26,6 +39,7 @@ import userRouter from './routes/user.routes.js'
 
 
 app.use("/api/v1/users", userRouter)//Jo bhi userRouter pe jaraheho usko ye chipka ke bhejdo
+
 
 
 

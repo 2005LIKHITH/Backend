@@ -8,12 +8,12 @@ import { User } from "../model/user.model.js";
 const verifyJWT = asyncHandler(async(req,res,next)=>{
     //Ya  Tho cookies se access token aayega ya Toh Authorization header se token Aayega Bhai => as simple as that
     try{
-        const token = req.cookies?.accessToken || req.header("Authorizatoin")?.replace("Bearer ","")
+        const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ","")
 
         if(!token)throw new ApiError(401,"UnAuthorized Request !!");
         //Token Sahi hai ya Nahi 
         const decodedToken = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET)
-        const user = await User.findById(decodedToken?._id).select("-password -refreshToken");
+        const user = await User.findById(decodedToken?._id).select("-password -refreshToken");  
     
         if(!user)throw new ApiError(401,"Invalid AccessToken");
     

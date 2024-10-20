@@ -13,9 +13,10 @@ const storage = multer.diskStorage({
       cb(null, "public/temp")
     },
     filename: function (req, file, cb) {
-    //   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-      cb(null, file.originalname)
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+      cb(null, file.originalname + '-' + uniqueSuffix)
       //null indicates there is no error 
+      //Over writing can be avoided by using uniqueSuffix
     }
   })
   //creates an instance of the multer middleware configured to use the specified storage engine

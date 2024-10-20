@@ -1,5 +1,5 @@
 import mongoose, {Schema} from "mongoose";
-import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2"; //helps loading  large chunks of data (like videos)
 const videoSchema = new Schema({
    videoFile:{
     type:String,//cloudinary
@@ -21,6 +21,7 @@ const videoSchema = new Schema({
     //cloudinary
     type:Number,
     required:true
+    //we can get duration directly from cloudinary
    },
    views:{
     type:Number,
@@ -46,4 +47,4 @@ videoSchema.plugin(mongooseAggregatePaginate);
 //Now we can write aggregation queries
 
 
-export const Video = mongoose.model('Video', videoSchema);
+export const Video = mongoose.model('Video', videoSchema);//Remember this will be stored 'videos' in database
