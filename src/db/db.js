@@ -18,7 +18,9 @@ const connectDB = async () => {
         const connectionInstance = await mongoose.connect(`${process.env.MONGODB_URI}/${DB_NAME}`); 
         console.log(`\nMongoDB connected !! DB HOST: ${connectionInstance.connection.host}`);
         //so what we are doing using we are creating a database named DB_NAME in the host
-        const db = mongoose.connection;
+        //.host contains ip address of the mongodb server
+
+        const db = mongoose.connection;//returns an object 
 
         db.on('disconnected', () => {
             console.log("\nMongoDB disconnected");
@@ -28,7 +30,8 @@ const connectDB = async () => {
         });
     } catch (err) {
         console.log("MONGODB connection ERROR: ", err);
-        process.exit(1);
+        process.exit(1);//is used to terminate the Node.js process and indicates that the 
+        // process ended due to an error or some unexpected condition. 
     }
 };
 
