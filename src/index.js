@@ -1,6 +1,6 @@
 import dotenv from "dotenv"
 import connectDB from './db/db.js';
-import {app} from './app.js'
+import {app} from './app.js'//Jho asli kaam hoga yaha se chaalu hoga route vaghera
 
 dotenv.config({
     path: './.env'

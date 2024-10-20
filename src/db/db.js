@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 
-
+//DB_NAME is not that much important to make it private but it is constatn so we are storing it in a constat.js file
 import { DB_NAME } from "../constants.js";
 
 const connectDB = async () => {
