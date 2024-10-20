@@ -22,6 +22,12 @@ router.route("/register").post(upload.fields(
 router.route("/login").post(loginUser)
 router.route("/logout").post(verifyJWT,logOutUser)
 router.route("/refresh-token").post(refreshAccessToken)
+router.route("/change-password").post(verifyJWT,changePassword)
+router.route("/current-user").get(verifyJWT,getUser)
+router.route("/update-account-details").post(verifyJWT,updateAccountDetails)
+router.route("/update-account").patch(verifyJWT,upload.fields(
+    
+))
 
 //Secured Routes 
 

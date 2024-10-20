@@ -375,6 +375,7 @@ const getUserChannelProfile = asyncHandler(async(req, res) => {
     }
 
     const channel = await User.aggregate([
+        //filters from the users context using mqtch
         {
             $match: {
                 username: username?.toLowerCase()
@@ -427,6 +428,7 @@ const getUserChannelProfile = asyncHandler(async(req, res) => {
             }
         }
     ])
+    //console.log(channel)
 
     if (!channel?.length) {
         throw new ApiError(404, "channel does not exists")
@@ -438,6 +440,7 @@ const getUserChannelProfile = asyncHandler(async(req, res) => {
         new ApiResponse(200, channel[0], "User channel fetched successfully")
     )
 })
+//Understand the context when working with chained pipelines
 
 const getWatchHistory = asyncHandler(async(req, res) => {
     const user = await User.aggregate([
@@ -474,6 +477,7 @@ const getWatchHistory = asyncHandler(async(req, res) => {
                         $addFields:{
                             owner:{
                                 $first: "$owner"
+                                //convert array of objects to object
                             }
                         }
                     }
